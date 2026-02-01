@@ -1,4 +1,8 @@
-import 'dotenv/config';
+// Load dotenv ONLY in local development
+if (process.env.NODE_ENV !== 'production') {
+  await import('dotenv/config');
+}
+
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -26,15 +30,17 @@ const app = express();
 
 // Security middleware
 app.use(helmet());
-app.use(cors({
-  origin: config.corsOrigin,
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: config.corsOrigin,
+    credentials: true,
+  })
+);
 
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 100, // limit each IP to 100 requests per window
 });
 app.use('/api/', limiter);
 
@@ -44,10 +50,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+  });
 });
 
-// API routes - aligned with frontend features
+// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/tasks', tasksRoutes);
@@ -69,5 +78,5 @@ app.listen(PORT, () => {
   console.log(`🚀 Production server running on port ${PORT}`);
   console.log(`📊 Environment: ${config.nodeEnv}`);
   console.log(`🔗 CORS origin: ${config.corsOrigin}`);
-  console.log(`🗄️  MongoDB connected`);
+  console.log(`🗄️ MongoDB connected`);
 });
