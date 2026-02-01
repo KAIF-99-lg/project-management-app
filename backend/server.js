@@ -3,6 +3,13 @@ if (process.env.NODE_ENV !== 'production') {
   await import('dotenv/config');
 }
 
+// Force production environment variables for Render
+if (process.env.RENDER) {
+  process.env.NODE_ENV = 'production';
+  process.env.CORS_ORIGIN = 'https://project-management-app-theta-five.vercel.app';
+  process.env.JWT_SECRET = 'mdkaif_project_management_super_secret_key_2024';
+}
+
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -27,6 +34,9 @@ import { userRoutes } from './routes/users.js';
 connectDB();
 
 const app = express();
+
+// Trust proxy for Render deployment
+app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet());
