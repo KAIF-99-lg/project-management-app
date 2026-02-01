@@ -1,0 +1,73 @@
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import connectDB from './config/database.js';
+import { config } from './config/environment.js';
+import { errorHandler, notFoundHandler } from './utils/errors.js';
+
+// Route imports
+import { authRoutes } from './routes/auth.js';
+import { dashboardRoutes } from './routes/dashboard.js';
+import { tasksRoutes } from './routes/tasks.js';
+import { kanbanRoutes } from './routes/kanban.js';
+import { projectRoutes } from './routes/projects.js';
+import { teamRoutes } from './routes/teams.js';
+import { memberRoutes } from './routes/members.js';
+import { analyticsRoutes } from './routes/analytics.js';
+import { activityRoutes } from './routes/activity.js';
+import { userRoutes } from './routes/users.js';
+
+// Connect to MongoDB
+connectDB();
+
+const app = express();
+
+// Security middleware
+app.use(helmet());
+app.use(cors({
+  origin: config.corsOrigin,
+  credentials: true
+}));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use('/api/', limiter);
+
+// Body parsing
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// API routes - aligned with frontend features
+app.use('/api/auth', authRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/tasks', tasksRoutes);
+app.use('/api/kanban', kanbanRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/teams', teamRoutes);
+app.use('/api/members', memberRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/activity', activityRoutes);
+app.use('/api/users', userRoutes);
+
+// Error handling
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+const PORT = config.port;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Production server running on port ${PORT}`);
+  console.log(`📊 Environment: ${config.nodeEnv}`);
+  console.log(`🔗 CORS origin: ${config.corsOrigin}`);
+  console.log(`🗄️  MongoDB connected`);
+});

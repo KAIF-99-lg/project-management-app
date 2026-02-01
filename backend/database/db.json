@@ -1,0 +1,65 @@
+{
+  "users": [
+    {
+      "id": "user_001",
+      "name": "Kaif Ahmed",
+      "email": "kaif@example.com",
+      "password": "manager123",
+      "role": "Manager",
+      "createdAt": "2026-01-15T10:00:00Z"
+    },
+    {
+      "id": "user_002",
+      "name": "Rahul Sharma",
+      "email": "rahul@example.com",
+      "password": "member123",
+      "role": "Member",
+      "createdAt": "2026-01-16T10:00:00Z"
+    },
+    {
+      "id": "user_003",
+      "name": "Priya Singh",
+      "email": "priya@example.com",
+      "password": "member123",
+      "role": "Member",
+      "createdAt": "2026-01-17T10:00:00Z"
+    }
+  ],
+  "teams": [
+    {
+      "id": "team_001",
+      "name": "Frontend Team",
+      "createdBy": "user_001",
+      "members": [
+        { "userId": "user_001", "role": "Admin" },
+        { "userId": "user_002", "role": "Member" }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_001",
+      "name": "Website Revamp",
+      "teamId": "team_001",
+      "createdBy": "user_001",
+      "status": "Active",
+      "description": "Complete redesign of the company website",
+      "createdAt": "2026-01-20T10:00:00Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task_001",
+      "title": "Build Login Page",
+      "description": "Create a responsive login page",
+      "status": "In Progress",
+      "priority": "High",
+      "assignedTo": "user_002",
+      "projectId": "project_001",
+      "progress": 70,
+      "dueDate": "2026-02-05T23:59:59Z",
+      "createdAt": "2026-01-25T10:00:00Z"
+    }
+  ],
+  "activityLogs": []
+}
